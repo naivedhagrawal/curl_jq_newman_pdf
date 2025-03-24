@@ -1,16 +1,23 @@
+# Use latest Node.js Alpine base image
 FROM node:alpine
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Set working directory
+WORKDIR /app
 
-RUN apk update && \
-    apk add --no-cache curl jq libstdc++ && \
-    apk add --no-cache --repository=http://dl-3.alpinelinux.org/alpine/edge community/ wkhtmltopdf && \
-    npm install -g newman && \
-    rm -rf /var/cache/apk/*
+# Install required packages
+RUN apk add --no-cache \
+    curl \
+    jq \
+    newman \
+    wkhtmltopdf
 
-RUN curl --version && \
+# Verify installations
+RUN node --version && \
+    npm --version && \
+    curl --version && \
     jq --version && \
     newman --version && \
     wkhtmltopdf --version
 
-CMD ["bash"]
+# Default command
+CMD ["node"]
