@@ -1,23 +1,23 @@
-# Use latest Node.js Alpine base image
-FROM node:alpine
+# Use a base image with the latest version of Node.js and Debian
+FROM node:latest
 
-# Set working directory
-WORKDIR /app
+# Set environment variables for non-interactive installs
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Install required packages
-RUN apk add --no-cache \
+# Update package list and install curl, jq, wkhtmltopdf, and dependencies for newman
+RUN apt-get update && \
+    apt-get install -y \
     curl \
     jq \
-    newman \
-    wkhtmltopdf
+    wkhtmltopdf \
+    && npm install -g newman \
+    && rm -rf /var/lib/apt/lists/*
 
 # Verify installations
-RUN node --version && \
-    npm --version && \
-    curl --version && \
+RUN curl --version && \
     jq --version && \
     newman --version && \
     wkhtmltopdf --version
 
 # Default command
-CMD ["node"]
+CMD ["bash"]
